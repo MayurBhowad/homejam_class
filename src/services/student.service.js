@@ -34,5 +34,16 @@ const Student_Login = (data) => {
     })
 }
 
+const EnrollingToClass = data => {
+    return new Promise((resolve, reject) => {
+        PgClient.query(`INSERT INTO enrolled(teacher_id, student_id, class_id) VALUES($1, $2, $3) RETURNING *`, [data.teacher_id, data.student_id, data.class_id], (err, result) => {
+            if (err) {
+                return reject({ status: 500, message: err.message })
+            }
+            return resolve({ status: 200, data: result.rows })
+        })
+    })
+}
 
-module.exports = { Student_Signup, Student_Login }
+
+module.exports = { Student_Signup, Student_Login, EnrollingToClass }

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { Student_Signup, Student_Login } = require('../services/student.service');
+const { response } = require('express');
+const rollAuth = require('../middleware/RollAuth.middleware')
+const { Student_Signup, Student_Login, EnrollingToClass } = require('../services/student.service');
 const createToken = require('../utils/createToken.util');
 
 const router = require('express').Router();
@@ -28,12 +29,30 @@ router.post('/signup', async (req, res) => {
 router.post('/login', (req, res) => {
     Student_Login(req.body)
         .then(async (response) => {
-            const token = await createToken({ id: response.student.t_id, name: response.student.name, email: response.student.email, roll: response.student.roll });
+            const token = await createToken({ id: response.student.s_id, name: response.student.name, email: response.student.email, roll: response.student.roll });
             res.json({ success: true, token: token })
         })
         .catch(err => {
             console.log(err.message);
             res.status(err.status).json({ success: false, message: err.message })
+        })
+})
+
+router.post('/enroll', rollAuth, (req, res) => {
+    if (req.user.roll !== 'student') {
+        return res.status(401).json({ success: false, message: 'Only student can enroll!' })
+    }
+
+    EnrollingToClass({ ...req.body, student_id: req.user.id })
+        .then(response => {
+            res.json({ success: true, data: response.data })
+        })
+        .catch(err => {
+            if (err.status) {
+                res.status(err.status).json({ success: false, message: err.message })
+            } else {
+                res.status(500).json({ success: false, message: err.message })
+            }
         })
 })
 

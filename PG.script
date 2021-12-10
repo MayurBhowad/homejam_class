@@ -6,6 +6,9 @@ CREATE DATABASE homejam;
 ==== TEACHERS =============================================
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ALTER TABLE teachers
+ADD CONSTRAINT  teacher_unique UNIQUE (email);
+
 DROP TABLE teachers;
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -62,6 +65,7 @@ WHERE email = 'steven@some.com';
 
 
 
+
 ==== STUDENTS =============================================================================
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -79,6 +83,9 @@ CREATE TABLE students (
   updateAt timestamp
 );
 
+ALTER TABLE students
+ADD CONSTRAINT  students_unique UNIQUE (email);
+
 ##### Insert into students Table ##############################
 
 INSERT INTO students(name, email, password)
@@ -95,7 +102,7 @@ CREATE TRIGGER update_student_updateAt
 
 ##### Update students Table ##############################
 UPDATE students
-SET roll = 'students'
+SET roll = 'student'
 WHERE email = 'nick@some.com';
 
 
@@ -119,6 +126,51 @@ CREATE TABLE classes (
   CONSTRAINT fk_Teacher
     FOREIGN KEY (teacher_id)
     REFERENCES teachers(T_ID)
+);
+
+##### Insert into classes Table ##############################
+
+INSERT INTO classes(subject, startAt, endAt, teacher_id)
+  VALUES('maths', '2021-12-10 18:07:44.473212', '2021-12-10 19:07:44.473212', 1);
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DROP TRIGGER update_classes_updateAt ON students;
+
+CREATE TRIGGER update_classes_updateAt 
+  BEFORE UPDATE ON classes FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+##### Update classes Table ##############################
+UPDATE classes
+SET subject = 'bio'
+WHERE c_id = '1';
+
+
+
+
+==== ENROLLED ===================================================================================
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+DROP TABLE enrolled;
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+##### Create enrolled Table ##############################
+CREATE TABLE enrolled (
+  E_ID SERIAL PRIMARY KEY,
+  teacher_id INT,
+  student_id INT,
+  class_id INT,
+  createAt timestamp default now(),
+  updateAt timestamp,
+  CONSTRAINT fk_Teacher
+    FOREIGN KEY (teacher_id)
+    REFERENCES teachers(T_ID),
+  CONSTRAINT fk_Student
+    FOREIGN KEY (student_id)
+    REFERENCES students(S_ID),
+  CONSTRAINT fk_Class
+    FOREIGN KEY (class_id)
+    REFERENCES classes(C_ID)
 );
 
 ##### Insert into classes Table ##############################

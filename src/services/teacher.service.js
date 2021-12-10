@@ -3,7 +3,7 @@ const checkPassword = require('../utils/checkPassword.utils');
 
 const Teacher_Signup = (data) => {
     return new Promise((resolve, reject) => {
-        PgClient.query(`INSERT INTO teachers(name, email, password, subject) VALUES($1, $2, $3, $4) RETURNING *`, [data.name, data.email, data.password, data.subject], (err, results) => {
+        PgClient.query(`INSERT INTO teachers(name, email, password, subject, roll) VALUES($1, $2, $3, $4, $5) RETURNING *`, [data.name, data.email, data.password, data.subject, data.roll], (err, results) => {
             if (err) {
                 reject({ status: 500, message: err.message })
             }
