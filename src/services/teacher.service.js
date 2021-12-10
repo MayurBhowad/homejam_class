@@ -36,7 +36,9 @@ const Teacher_Login = (data) => {
 
 const getEnrolledStudentsForClass = (classId) => {
     return new Promise((resolve, reject) => {
-        PgClient.query('SELECT * FROM enrolled WHERE class_id=$1', [classId], (err, result) => {
+        PgClient.query(`
+        SELECT e_id, student_id, name, email FROM enrolled LEFT JOIN students ON enrolled.student_id = students.S_ID WHERE class_id = $1
+        `, [classId], (err, result) => {
             if (err) {
                 return reject({ message: err.message })
             }

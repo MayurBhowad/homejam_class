@@ -190,3 +190,12 @@ CREATE TRIGGER update_classes_updateAt
 UPDATE classes
 SET subject = 'bio'
 WHERE c_id = '1';
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+SELECT e_id, teacher_id, student_id, class_id, S_ID, name, email, roll
+  FROM enrolled LEFT JOIN students ON enrolled.student_id = students.S_ID 
+  WHERE class_id = 12;

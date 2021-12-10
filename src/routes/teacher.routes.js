@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const req = require('express/lib/request');
+const rollAuth = require('../middleware/RollAuth.middleware')
 const { Teacher_Signup, Teacher_Login, getEnrolledStudentsForClass } = require('../services/teacher.service');
 const createToken = require('../utils/createToken.util');
 
@@ -11,12 +10,19 @@ router.get('/test', (req, res) => {
     res.json({ success: true, route: '/teacher/test' })
 })
 
-router.get('/byClass', (req, res) => {
+router.get('/byClass', rollAuth, (req, res) => {
     const { class_id } = req.query;
 
     getEnrolledStudentsForClass(class_id)
         .then(students => {
-            res.json({ success: true, students: students.data })
+            res.json({
+                success: true,
+                class_id: class_id,
+                teacher: req.user.name,
+                teacher_email: req.user.email,
+                subject: req.user.subject,
+                students: students.data
+            })
         })
         .catch(err => {
             console.log(err);
