@@ -54,14 +54,35 @@ WHERE T_ID = 1;
 
 
 
-==== STUDENTS =============================================
+==== STUDENTS =============================================================================
 
-##### Create teachers Table ##############################
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+DROP TABLE students;
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+##### Create students Table ##############################
 CREATE TABLE students (
   S_ID SERIAL PRIMARY KEY,
   name VARCHAR(30),
   email VARCHAR(30),
-  password VARCHAR(100)
+  password VARCHAR(100),
   createAt timestamp default now(),
   updateAt timestamp
 );
+
+##### Insert into students Table ##############################
+
+INSERT INTO students(name, email, password)
+  VALUES('student1', 'student1@some.com','123');
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+CREATE TRIGGER update_student_updateAt 
+  BEFORE UPDATE ON students FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+##### Update students Table ##############################
+UPDATE students
+SET password = '1234'
+WHERE email = 'student1@some.com';
