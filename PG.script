@@ -1,0 +1,63 @@
+
+##### Create Database ##############################
+CREATE DATABASE homejam;
+
+
+==== TEACHERS =============================================
+
+##### Create teachers Table ##############################
+CREATE TABLE teachers (
+  T_ID SERIAL PRIMARY KEY,
+  name VARCHAR(30),
+  email VARCHAR(30),
+  password VARCHAR(100),
+  subject VARCHAR(30),
+  createAt timestamp default now(),
+  updateAt timestamp
+);
+
+##### Insert into teachers Table ##############################
+
+INSERT INTO teachers(name, email, password, subject)
+  VALUES('teacher1', 'teacher1@some.com','123','maths');
+
+##### Update `updateAt` teachers Table ##############################
+
+CREATE OR REPLACE FUNCTION updateAt_func()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF row(NEW.*) IS DISTINCT FROM row(OLD.*) THEN
+    NEW.updateAt = now();
+    RETURN NEW;
+  ELSE
+    RETURN OLD;
+  END IF;
+END;
+$$ language 'plpgsql';
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+CREATE TRIGGER update_teacher_updateAt 
+  BEFORE UPDATE ON teachers FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+##### Select teachers Table ##############################
+
+SELECT * FROM teachers;
+
+##### Update teachers Table ##############################
+UPDATE teachers
+SET password = '1234'
+WHERE T_ID = 1;
+
+
+
+==== STUDENTS =============================================
+
+##### Create teachers Table ##############################
+CREATE TABLE students (
+  S_ID SERIAL PRIMARY KEY,
+  name VARCHAR(30),
+  email VARCHAR(30),
+  password VARCHAR(100)
+  createAt timestamp default now(),
+  updateAt timestamp
+);
