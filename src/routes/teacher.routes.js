@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const req = require('express/lib/request');
-const { Teacher_Signup, Teacher_Login } = require('../services/teacher.service');
+const { Teacher_Signup, Teacher_Login, getEnrolledStudentsForClass } = require('../services/teacher.service');
 const createToken = require('../utils/createToken.util');
 
 const router = require('express').Router();
@@ -9,6 +9,19 @@ const router = require('express').Router();
 
 router.get('/test', (req, res) => {
     res.json({ success: true, route: '/teacher/test' })
+})
+
+router.get('/byClass', (req, res) => {
+    const { class_id } = req.query;
+
+    getEnrolledStudentsForClass(class_id)
+        .then(students => {
+            res.json({ success: true, students: students.data })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ success: false, message: err.message })
+        })
 })
 
 router.post('/signup', async (req, res) => {

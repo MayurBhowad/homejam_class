@@ -45,5 +45,20 @@ const EnrollingToClass = data => {
     })
 }
 
+const getEnrolledClasses = studentId => {
+    return new Promise((resolve, reject) => {
+        PgClient.query(`SELECT * FROM enrolled WHERE student_id=$1`, [studentId], (err, result) => {
+            if (err) {
+                return reject({ status: 500, message: err.message })
+            }
+            if (result.rows.length > 0) {
+                return resolve({ status: 200, data: result.rows })
+            } else {
+                return reject({ status: 404, message: 'You are not enrolled for class!' })
+            }
+        })
+    })
+}
 
-module.exports = { Student_Signup, Student_Login, EnrollingToClass }
+
+module.exports = { Student_Signup, Student_Login, EnrollingToClass, getEnrolledClasses }

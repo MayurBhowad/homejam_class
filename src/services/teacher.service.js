@@ -34,5 +34,16 @@ const Teacher_Login = (data) => {
     })
 }
 
+const getEnrolledStudentsForClass = (classId) => {
+    return new Promise((resolve, reject) => {
+        PgClient.query('SELECT * FROM enrolled WHERE class_id=$1', [classId], (err, result) => {
+            if (err) {
+                return reject({ message: err.message })
+            }
+            return resolve({ data: result.rows })
+        })
+    })
+}
 
-module.exports = { Teacher_Signup, Teacher_Login }
+
+module.exports = { Teacher_Signup, Teacher_Login, getEnrolledStudentsForClass }
