@@ -29,7 +29,7 @@ router.post('/signup', async (req, res) => {
 router.post('/login', (req, res) => {
     Teacher_Login(req.body)
         .then(async (response) => {
-            const token = await createToken({ id: response.teacher.t_id, name: response.teacher.name, email: response.teacher.email });
+            const token = await createToken({ id: response.teacher.t_id, name: response.teacher.name, email: response.teacher.email, roll: response.teacher.roll });
             res.json({ success: true, token: token })
         })
         .catch(err => {

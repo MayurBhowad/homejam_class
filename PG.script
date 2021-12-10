@@ -16,9 +16,14 @@ CREATE TABLE teachers (
   email VARCHAR(30),
   password VARCHAR(100),
   subject VARCHAR(30),
+  roll VARCHAR(30),
   createAt timestamp default now(),
   updateAt timestamp
 );
+
++++++ ALTER TABLE +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ALTER TABLE teachers ADD COLUMN roll VARCHAR(30);
+
 
 ##### Insert into teachers Table ##############################
 
@@ -26,6 +31,7 @@ INSERT INTO teachers(name, email, password, subject)
   VALUES('teacher1', 'teacher1@some.com','123','maths');
 
 ##### Update `updateAt` teachers Table ##############################
+DROP FUNCTION updateAt_func();
 
 CREATE OR REPLACE FUNCTION updateAt_func()
 RETURNS TRIGGER AS $$
@@ -39,6 +45,8 @@ BEGIN
 END;
 $$ language 'plpgsql';
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DROP TRIGGER update_teacher_updateAt ON teachers;
+
 CREATE TRIGGER update_teacher_updateAt 
   BEFORE UPDATE ON teachers FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -49,8 +57,8 @@ SELECT * FROM teachers;
 
 ##### Update teachers Table ##############################
 UPDATE teachers
-SET password = '1234'
-WHERE T_ID = 1;
+SET roll = 'teacher'
+WHERE email = 'steven@some.com';
 
 
 
@@ -66,6 +74,7 @@ CREATE TABLE students (
   name VARCHAR(30),
   email VARCHAR(30),
   password VARCHAR(100),
+  roll VARCHAR(30),
   createAt timestamp default now(),
   updateAt timestamp
 );
@@ -77,6 +86,8 @@ INSERT INTO students(name, email, password)
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DROP TRIGGER update_student_updateAt ON students;
+
 CREATE TRIGGER update_student_updateAt 
   BEFORE UPDATE ON students FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -84,5 +95,46 @@ CREATE TRIGGER update_student_updateAt
 
 ##### Update students Table ##############################
 UPDATE students
-SET password = '1234'
-WHERE email = 'student1@some.com';
+SET roll = 'students'
+WHERE email = 'nick@some.com';
+
+
+
+
+
+==== CLASSES ===================================================================================
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+DROP TABLE classes;
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+##### Create classes Table ##############################
+CREATE TABLE classes (
+  C_ID SERIAL PRIMARY KEY,
+  subject VARCHAR(30),
+  startAt timestamp,
+  endAt timestamp,
+  teacher_id INT,
+  createAt timestamp default now(),
+  updateAt timestamp,
+  CONSTRAINT fk_Teacher
+    FOREIGN KEY (teacher_id)
+    REFERENCES teachers(T_ID)
+);
+
+##### Insert into classes Table ##############################
+
+INSERT INTO classes(subject, startAt, endAt, teacher_id)
+  VALUES('maths', '2021-12-10 18:07:44.473212', '2021-12-10 19:07:44.473212', 1);
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+DROP TRIGGER update_classes_updateAt ON students;
+
+CREATE TRIGGER update_classes_updateAt 
+  BEFORE UPDATE ON classes FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+##### Update classes Table ##############################
+UPDATE classes
+SET subject = 'bio'
+WHERE c_id = '1';

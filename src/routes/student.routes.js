@@ -13,7 +13,7 @@ router.get('/test', (req, res) => {
 router.post('/signup', async (req, res) => {
 
     let hashedPassword = await bcrypt.hash(req.body.password, 10);
-    let newStudent = { ...req.body, password: hashedPassword }
+    let newStudent = { ...req.body, password: hashedPassword, roll: 'student' }
 
     Student_Signup(newStudent)
         .then(response => {
@@ -28,7 +28,7 @@ router.post('/signup', async (req, res) => {
 router.post('/login', (req, res) => {
     Student_Login(req.body)
         .then(async (response) => {
-            const token = await createToken({ id: response.student.t_id, name: response.student.name, email: response.student.email });
+            const token = await createToken({ id: response.student.t_id, name: response.student.name, email: response.student.email, roll: response.student.roll });
             res.json({ success: true, token: token })
         })
         .catch(err => {
