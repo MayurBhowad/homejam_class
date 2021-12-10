@@ -5,6 +5,10 @@ CREATE DATABASE homejam;
 
 ==== TEACHERS =============================================
 
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+DROP TABLE teachers;
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 ##### Create teachers Table ##############################
 CREATE TABLE teachers (
   T_ID SERIAL PRIMARY KEY,
