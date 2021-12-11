@@ -76,7 +76,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 CREATE TABLE students (
   S_ID SERIAL PRIMARY KEY,
   name VARCHAR(30),
-  email VARCHAR(30),
+  email VARCHAR(30) UNIQUE,
   password VARCHAR(100),
   roll VARCHAR(30),
   createAt timestamp default now(),
@@ -180,10 +180,10 @@ INSERT INTO classes(subject, startAt, endAt, teacher_id)
 
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-DROP TRIGGER update_classes_updateAt ON students;
+DROP TRIGGER update_enrolled_updateAt ON students;
 
-CREATE TRIGGER update_classes_updateAt 
-  BEFORE UPDATE ON classes FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
+CREATE TRIGGER update_enrolled_updateAt 
+  BEFORE UPDATE ON enrolled FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ##### Update classes Table ##############################
