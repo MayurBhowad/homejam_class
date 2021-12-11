@@ -6,9 +6,9 @@ info:
   version: '1.0.0'
   contact: 
     email: mayurbhowad1995@gmail.com
-  servers:
-    -url: "http://127.0.0.1:4001/"
-    description: This is local server 
+
+servers:
+  - url: https://homejam01.herokuapp.com/
   
 schemes: [http, https]
 
