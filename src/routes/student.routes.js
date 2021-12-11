@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const { response } = require('express');
 const rollAuth = require('../middleware/RollAuth.middleware')
-const { Student_Signup, Student_Login, EnrollingToClass, getEnrolledClasses } = require('../services/student.service');
+const { Student_Signup, Student_Login, EnrollingToClass, getEnrolledClasses, getAllClassesByStudents } = require('../services/student.service');
 const createToken = require('../utils/createToken.util');
 
 const router = require('express').Router();
@@ -23,6 +23,24 @@ router.get('/myClass', (req, res) => {
                 return res.status(err.status).json({ success: false, message: err.message })
             }
             res.status(500).json({ success: false, message: 'Something wen wrong!' })
+        })
+})
+
+router.get('/student_classes', rollAuth, (req, res) => {
+    // const { class_id } = req.query;
+
+    getAllClassesByStudents(req.user.id)
+        .then(classes => {
+            res.json({
+                success: true,
+                student: req.user.name,
+                student_email: req.user.email,
+                classes: classes.data
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ success: false, message: err.message })
         })
 })
 

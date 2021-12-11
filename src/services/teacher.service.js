@@ -59,6 +59,8 @@ const getAllClassesByTeacher = (teacherId) => {
     })
 }
 
+
+/**Feels useless */
 const getEnrolledStudentsForClass = (classId) => {
     return new Promise((resolve, reject) => {
         PgClient.query(`

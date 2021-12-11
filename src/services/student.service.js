@@ -45,6 +45,31 @@ const EnrollingToClass = data => {
     })
 }
 
+const getAllClassesByStudents = (studentId) => {
+    return new Promise((resolve, reject) => {
+        PgClient.query(`
+        SELECT e_id, enrolled.teacher_id, name,class_id, email, roll FROM enrolled 
+        LEFT JOIN teachers ON enrolled.teacher_id = teachers.T_ID
+        LEFT JOIN classes ON enrolled.class_id = classes.C_ID
+        WHERE enrolled.student_id = $1;
+        `, [studentId], (err, result) => {
+            if (err) {
+                return reject({ status: 500, message: err.message })
+            }
+
+            //sorting data with class id
+            //data is sorted in Array of students with variable classID
+            let sortedData = result.rows.reduce(function (r, a) {
+                r[a.class_id] = r[a.class_id] || [];
+                r[a.class_id].push(a);
+                return r
+            }, Object.create(null))
+
+            resolve({ status: 200, data: sortedData })
+        })
+    })
+}
+
 const getEnrolledClasses = studentId => {
     return new Promise((resolve, reject) => {
         PgClient.query(`SELECT * FROM enrolled WHERE student_id=$1`, [studentId], (err, result) => {
@@ -61,4 +86,4 @@ const getEnrolledClasses = studentId => {
 }
 
 
-module.exports = { Student_Signup, Student_Login, EnrollingToClass, getEnrolledClasses }
+module.exports = { Student_Signup, Student_Login, EnrollingToClass, getEnrolledClasses, getAllClassesByStudents }
