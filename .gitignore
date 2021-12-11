@@ -1,1 +1,6 @@
+.env
+general.note
+
+
 node_modules
+src/swagger
