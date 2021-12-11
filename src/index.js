@@ -1,10 +1,14 @@
 const express = require('express');
 const PG_CONN = require('./config/pg.db');
 require('dotenv').config();
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerJsDocs = YAML.load("./src/api.yaml");
 
 const app = express();
 const PORT = process.env.PORT || 4001;
 
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJsDocs))
 // app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
