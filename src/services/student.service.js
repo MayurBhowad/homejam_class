@@ -5,7 +5,7 @@ const Student_Signup = (data) => {
     return new Promise((resolve, reject) => {
         PgClient.query(`INSERT INTO students(name, email, password, roll) VALUES($1, $2, $3, $4) RETURNING *`, [data.name, data.email, data.password, data.roll], (err, results) => {
             if (err) {
-                reject({ status: 500, message: err.message })
+                reject({ status: 400, message: err.message })
             }
             resolve({ status: 200, data: results })
         })
@@ -36,9 +36,12 @@ const Student_Login = (data) => {
 
 const EnrollingToClass = data => {
     return new Promise((resolve, reject) => {
-        PgClient.query(`INSERT INTO enrolled(teacher_id, student_id, class_id) VALUES($1, $2, $3) RETURNING *`, [data.teacher_id, data.student_id, data.class_id], (err, result) => {
+        // PgClient.query(`INSERT INTO enrolled(teacher_id, student_id, class_id) VALUES($1, $2, $3) RETURNING *`, [data.teacher_id, data.student_id, data.class_id], (err, result) => {
+        PgClient.query(`
+            INSERT INTO enrolled(teacher_id, student_id, class_id) VALUES((SELECT teacher_id FROM CLASSES WHERE c_id = $2), $1, $2) RETURNING *
+            `, [data.student_id, data.class_id], (err, result) => {
             if (err) {
-                return reject({ status: 500, message: err.message })
+                return reject({ status: 400, message: err.message })
             }
             return resolve({ status: 200, data: result.rows })
         })
@@ -54,7 +57,7 @@ const getAllClassesByStudents = (studentId) => {
         WHERE enrolled.student_id = $1;
         `, [studentId], (err, result) => {
             if (err) {
-                return reject({ status: 500, message: err.message })
+                return reject({ status: 400, message: err.message })
             }
 
             //sorting data with class id
@@ -74,7 +77,7 @@ const getEnrolledClasses = studentId => {
     return new Promise((resolve, reject) => {
         PgClient.query(`SELECT * FROM enrolled WHERE student_id=$1`, [studentId], (err, result) => {
             if (err) {
-                return reject({ status: 500, message: err.message })
+                return reject({ status: 400, message: err.message })
             }
             if (result.rows.length > 0) {
                 return resolve({ status: 200, data: result.rows })
