@@ -196,6 +196,16 @@ WHERE c_id = '1';
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-SELECT e_id, teacher_id, student_id, class_id, S_ID, name, email, roll
-  FROM enrolled LEFT JOIN students ON enrolled.student_id = students.S_ID 
-  WHERE class_id = 12;
+SELECT e_id, enrolled.teacher_id, student_id, class_id, S_ID, name, email, roll FROM enrolled 
+  LEFT JOIN students ON enrolled.student_id = students.S_ID
+  LEFT JOIN classes ON enrolled.class_id = classes.C_ID;
+
+
+SELECT c_id, classes.subject, teachers.email FROM classes
+  LEFT JOIN teachers ON classes.teacher_id = teachers.T_ID;
+
+
+SELECT e_id, enrolled.teacher_id, student_id, class_id, name, email, roll FROM enrolled 
+  LEFT JOIN students ON enrolled.student_id = students.S_ID
+  LEFT JOIN classes ON enrolled.class_id = classes.C_ID
+  WHERE enrolled.teacher_id = 5;

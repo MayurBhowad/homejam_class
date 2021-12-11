@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const rollAuth = require('../middleware/RollAuth.middleware')
-const { Teacher_Signup, Teacher_Login, getEnrolledStudentsForClass } = require('../services/teacher.service');
+const { Teacher_Signup, Teacher_Login, getEnrolledStudentsForClass, getAllClassesByTeacher } = require('../services/teacher.service');
 const createToken = require('../utils/createToken.util');
 
 const router = require('express').Router();
@@ -22,6 +22,25 @@ router.get('/byClass', rollAuth, (req, res) => {
                 teacher_email: req.user.email,
                 subject: req.user.subject,
                 students: students.data
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ success: false, message: err.message })
+        })
+})
+
+router.get('/teacher_classes', rollAuth, (req, res) => {
+    // const { class_id } = req.query;
+
+    getAllClassesByTeacher(req.user.id)
+        .then(classes => {
+            res.json({
+                success: true,
+                teacher: req.user.name,
+                teacher_email: req.user.email,
+                subject: req.user.subject,
+                classes: classes.data
             })
         })
         .catch(err => {
