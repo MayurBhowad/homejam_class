@@ -355,6 +355,8 @@ paths:
     post:
       summary: enrolling to class with class_id
       tags: [Student]
+      security:
+        - bearerAuth: []
       consumes: 
         - application/json
       parameters:
