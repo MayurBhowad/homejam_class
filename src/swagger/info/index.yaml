@@ -1,0 +1,8 @@
+title: Homejam backend
+description: Rest API for a class management system.
+version: '1.0.0'
+contact: 
+  email: mayurbhowad1995@gmail.com
+servers:
+  -url: "http://127.0.0.1:4001/"
+  description: This is local server 

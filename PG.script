@@ -173,11 +173,10 @@ CREATE TABLE enrolled (
     REFERENCES classes(C_ID)
 );
 
-##### Insert into classes Table ##############################
+##### Insert into enrolled Table ##############################
 
-INSERT INTO classes(subject, startAt, endAt, teacher_id)
-  VALUES('maths', '2021-12-10 18:07:44.473212', '2021-12-10 19:07:44.473212', 1);
-
+INSERT INTO enrolled(teacher_id, student_id, class_id)
+  VALUES((SELECT teacher_id FROM CLASSES WHERE c_id = 11), 1, 11)
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 DROP TRIGGER update_classes_updateAt ON students;

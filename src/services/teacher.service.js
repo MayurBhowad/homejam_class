@@ -5,7 +5,7 @@ const Teacher_Signup = (data) => {
     return new Promise((resolve, reject) => {
         PgClient.query(`INSERT INTO teachers(name, email, password, subject, roll) VALUES($1, $2, $3, $4, $5) RETURNING *`, [data.name, data.email, data.password, data.subject, data.roll], (err, results) => {
             if (err) {
-                reject({ status: 500, message: err.message })
+                reject({ status: 400, message: err.message })
             }
             resolve({ status: 200, data: results })
         })
@@ -17,7 +17,7 @@ const Teacher_Login = (data) => {
     return new Promise((resolve, reject) => {
         PgClient.query(`SELECT * FROM teachers WHERE email = $1`, [data.email], async (err, results) => {
             if (err) {
-                reject({ status: 500, message: err.message })
+                reject({ status: 400, message: err.message })
             }
             let teacher = results.rows[0]
             if (teacher) {
@@ -43,7 +43,7 @@ const getAllClassesByTeacher = (teacherId) => {
         WHERE enrolled.teacher_id = $1;
         `, [teacherId], (err, result) => {
             if (err) {
-                return reject({ status: 500, message: err.message })
+                return reject({ status: 400, message: err.message })
             }
 
             //sorting data with class id
