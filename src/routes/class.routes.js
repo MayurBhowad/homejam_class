@@ -11,7 +11,7 @@ router.get('/test', (req, res) => {
 router.get('/', (req, res) => {
     getAllClasses()
         .then(classes => {
-            res.json({ success: true, classes: classes })
+            res.json({ success: true, classes: classes.data })
         })
         .catch(err => {
             console.log(err);
