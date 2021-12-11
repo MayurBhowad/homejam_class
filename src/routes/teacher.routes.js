@@ -10,6 +10,8 @@ router.get('/test', (req, res) => {
     res.json({ success: true, route: '/teacher/test' })
 })
 
+
+/**Feels useles */
 router.get('/byClass', rollAuth, (req, res) => {
     const { class_id } = req.query;
 

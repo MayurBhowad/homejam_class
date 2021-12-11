@@ -11,6 +11,8 @@ router.get('/test', (req, res) => {
     res.json({ success: true, route: '/student/test' })
 })
 
+
+/**Feels useless */
 router.get('/myClass', (req, res) => {
     const { student_id } = req.query;
 
