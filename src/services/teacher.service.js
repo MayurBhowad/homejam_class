@@ -7,7 +7,7 @@ const Teacher_Signup = (data) => {
             if (err) {
                 reject({ status: 400, message: err.message })
             }
-            resolve({ status: 200, data: results })
+            resolve({ status: 200, data: results.rows[0] })
         })
     })
 }

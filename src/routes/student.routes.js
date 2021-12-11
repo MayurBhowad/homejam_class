@@ -29,7 +29,9 @@ router.get('/myClass', (req, res) => {
 })
 
 router.get('/student_classes', rollAuth, (req, res) => {
-    // const { class_id } = req.query;
+    if (req.user.roll !== 'student') {
+        return res.status(403).json({ success: false, message: 'you are not authorized to view resource!' })
+    }
 
     getAllClassesByStudents(req.user.id)
         .then(classes => {

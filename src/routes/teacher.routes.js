@@ -33,7 +33,9 @@ router.get('/byClass', rollAuth, (req, res) => {
 })
 
 router.get('/teacher_classes', rollAuth, (req, res) => {
-    // const { class_id } = req.query;
+    if (req.user.roll !== 'teacher') {
+        return res.status(403).json({ success: false, message: 'you are not authorized to view resource!' })
+    }
 
     getAllClassesByTeacher(req.user.id)
         .then(classes => {
@@ -58,7 +60,7 @@ router.post('/signup', async (req, res) => {
 
     Teacher_Signup(newTeacher)
         .then(response => {
-            res.json({ success: true, data: response.data.rows })
+            res.json({ success: true, data: response.data })
         })
         .catch(err => {
             console.log(err);
