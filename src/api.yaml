@@ -349,6 +349,63 @@ paths:
                 type: string
             example:
               success: false
+              message: "the reason that causes this error"   
+
+  /student/enroll:
+    post:
+      summary: enrolling to class with class_id
+      tags: [Student]
+      consumes: 
+        - application/json
+      parameters:
+        - in: body
+          name: Student
+          schema:
+            type: object
+            properties:
+              class_id: 
+                type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              success: 
+                type: boolean
+              data:
+                schema:
+                type: array
+                example:
+                  e_id: 1
+                  teacher_id: 4
+                  student_id: 2
+                  class_id: 23
+                  createAt: 2021-12-11T11:41:39.556Z
+                  updateAt: null
+        403:
+          description: "Error: Forbidden"
+          schema:
+            type: object
+            properties:
+              success: 
+                type: boolean
+              message:
+                type: string
+            example:
+              success: false
+              message: "A token is required for authentication"     
+        400:
+          description: Error
+          schema:
+            type: object
+            properties:
+              success: 
+                type: boolean
+              message:
+                type: string
+            example:
+              success: false
               message: "the reason that causes this error"     
 
 
@@ -395,7 +452,7 @@ paths:
                 type: boolean
               data:
                 schema:
-                type: array
+                type: object
                 example:
                   c_id: 1
                   subject: mathematics
@@ -415,4 +472,42 @@ paths:
                 type: string
             example:
               success: false
-              message: "the reason that causes this error"                
+              message: "the reason that causes this error"
+
+  /class/:
+    get:
+      summary: get all classes 
+      tags: [Class]
+      consumes: 
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              success: 
+                type: boolean
+              classes:
+                type: array
+                items:
+                  type: object
+                  example:
+                    c_id: 1
+                    subject: biology
+                    startAt: 2021-12-23T06:30:00.000Z
+                    endAt: 2021-12-23T06:30:00.000Z
+                    createAt: 2021-12-10T19:15:16.398Z
+                    updateAt: null
+        400:
+          description: Error
+          schema:
+            type: object
+            properties:
+              success: 
+                type: boolean
+              message:
+                type: string
+            example:
+              success: false
+              message: "the reason that causes this error"          
