@@ -54,6 +54,10 @@ router.get('/teacher_classes', rollAuth, (req, res) => {
 })
 
 router.post('/signup', async (req, res) => {
+    const { name, email, password, subject } = req.body;
+    if (name === undefined || email === undefined || password === undefined || subject === undefined) {
+        return res.status(400).json({ success: false, message: 'Please submit required fields!' })
+    }
 
     let hashedPassword = await bcrypt.hash(req.body.password, 10);
     let newTeacher = { ...req.body, password: hashedPassword, roll: 'teacher' }
@@ -69,6 +73,10 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    if (email === undefined || password === undefined) {
+        return res.status(400).json({ success: false, message: 'Please submit required fields!' })
+    }
     Teacher_Login(req.body)
         .then(async (response) => {
             const token = await createToken({ id: response.teacher.t_id, name: response.teacher.name, email: response.teacher.email, roll: response.teacher.roll, subject: response.teacher.subject });
