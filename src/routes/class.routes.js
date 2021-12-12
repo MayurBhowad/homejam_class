@@ -50,13 +50,12 @@ router.post('/newClass', rollAuth, (req, res) => {
         })
 })
 
-
-router.post('/editclass', (req, res) => {
+router.post('/editclass', rollAuth, (req, res) => {
     // Return if user is not teacher
     // Only teacher can add class
-    // if (req.user.roll !== 'teacher') {
-    //     return res.status(403).json({ success: false, message: 'Unauthorized!' })
-    // }
+    if (req.user.roll !== 'teacher') {
+        return res.status(403).json({ success: false, message: 'Unauthorized!' })
+    }
     if (req.body.startAt === undefined || req.body.endAt === undefined) {
         return res.status(400).json({ success: true, message: 'startAt and endAt value required' })
     }
