@@ -1,4 +1,4 @@
-const { CreateNewClass, getAllClasses, getClassesBySubject } = require('../services/class.service');
+const { CreateNewClass, getAllClasses, getClassesBySubject, EditClass } = require('../services/class.service');
 const rollAuth = require('../middleware/RollAuth.middleware')
 
 const router = require('express').Router();
@@ -43,6 +43,27 @@ router.post('/newClass', rollAuth, (req, res) => {
 
     //Create new Class
     CreateNewClass({ ...req.body, teacher_id: req.user.id, subject: req.user.subject })
+        .then(response => res.json({ success: true, class: response.data }))
+        .catch(err => {
+            console.log(err);
+            res.status(err.status).json({ success: false, message: err.message })
+        })
+})
+
+
+router.post('/editclass', (req, res) => {
+    // Return if user is not teacher
+    // Only teacher can add class
+    // if (req.user.roll !== 'teacher') {
+    //     return res.status(403).json({ success: false, message: 'Unauthorized!' })
+    // }
+    if (req.body.startAt === undefined || req.body.endAt === undefined) {
+        return res.status(400).json({ success: true, message: 'startAt and endAt value required' })
+    }
+
+
+    //Create new Class
+    EditClass(req.body)
         .then(response => res.json({ success: true, class: response.data }))
         .catch(err => {
             console.log(err);
