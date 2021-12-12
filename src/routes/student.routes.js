@@ -49,6 +49,10 @@ router.get('/student_classes', rollAuth, (req, res) => {
 })
 
 router.post('/signup', async (req, res) => {
+    const { name, email, password } = req.body;
+    if (name === undefined || email === undefined || password === undefined) {
+        return res.status(400).json({ success: false, message: 'Please submit required fields!' })
+    }
 
     let hashedPassword = await bcrypt.hash(req.body.password, 10);
     let newStudent = { ...req.body, password: hashedPassword, roll: 'student' }
@@ -64,6 +68,10 @@ router.post('/signup', async (req, res) => {
 })
 
 router.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    if (email === undefined || password === undefined) {
+        return res.status(400).json({ success: false, message: 'Please submit required fields!' })
+    }
     Student_Login(req.body)
         .then(async (response) => {
             const token = await createToken({ id: response.student.s_id, name: response.student.name, email: response.student.email, roll: response.student.roll });
