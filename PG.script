@@ -143,8 +143,27 @@ CREATE TRIGGER update_classes_updateAt
 
 ##### Update classes Table ##############################
 UPDATE classes
-SET subject = 'bio'
-WHERE c_id = '1';
+SET startAt = '2021-12-23 12:00:00'
+WHERE c_id = '11' RETURNING *;
+
+IF (SELECT teacher_id FROM classes WHERE c_id = 11) = 8 
+  THEN 
+    UPDATE classes
+    SET startAt = '2021-12-23 12:00:00', endAt = '2021-12-23 12:00:00'
+    WHERE c_id = '11';
+END IF;
+
+DO
+$do$
+BEGIN
+   IF (SELECT teacher_id FROM classes WHERE c_id = 11) = 8 THEN
+      UPDATE classes
+      SET startAt = '2021-12-23 12:00:00', endAt = '2021-12-23 12:00:00'
+      WHERE c_id = '11';
+   END IF;
+END
+$do$
+
 
 
 
