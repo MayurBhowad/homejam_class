@@ -159,7 +159,7 @@ BEGIN
         (SELECT teacher_id FROM classes WHERE c_id = in_class_id) != in_teacher_id
   THEN
     RAISE EXCEPTION USING
-      errcode='NOTALLOWD403',
+      errcode='28000',
       message='you are not allowd to change this record',
       hint='Check your authorization. ';
   ELSE

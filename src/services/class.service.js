@@ -41,9 +41,10 @@ const EditClass = data => {
     return new Promise((resolve, reject) => {
         PgClient.query(`
         UPDATE classes
-        SET startAt = $2, endAt = $3
-        WHERE c_id = $1 RETURNING *
-        `, [data.class_id, data.startAt, data.endAt], (err, result) => {
+        SET startAt = update_class($1, $2, $3, startAt),
+        endAt = update_class($1, $2, $4, endAt)
+        WHERE c_id = $1 RETURNING *;
+        `, [data.class_id, data.teacher_id, data.startAt, data.endAt], (err, result) => {
             if (err) {
                 return reject({ status: 400, message: err.message })
             }
