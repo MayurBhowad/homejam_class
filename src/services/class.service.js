@@ -48,7 +48,11 @@ const EditClass = data => {
             if (err) {
                 return reject({ status: 400, message: err.message })
             }
-            return resolve({ status: 200, data: result.rows[0] })
+            if (result.rowCount > 0) {
+                return resolve({ status: 200, data: result.rows[0] })
+            } else {
+                return reject({ status: 400, message: 'class not found!' })
+            }
         })
     })
 }
