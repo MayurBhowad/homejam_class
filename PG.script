@@ -76,7 +76,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 CREATE TABLE students (
   S_ID SERIAL PRIMARY KEY,
   name VARCHAR(30),
-  email VARCHAR(30),
+  email VARCHAR(30) UNIQUE,
   password VARCHAR(100),
   roll VARCHAR(30),
   createAt timestamp default now(),
@@ -143,28 +143,35 @@ CREATE TRIGGER update_classes_updateAt
 
 ##### Update classes Table ##############################
 UPDATE classes
-SET subject = 'bio'
-WHERE c_id = '1';
+SET startAt = '2021-12-23 12:00:00'
+WHERE c_id = '11' RETURNING *;
 
-IF (SELECT teacher_id FROM classes WHERE c_id = 11) = 8 
-  THEN 
-    UPDATE classes
-    SET startAt = '2021-12-23 12:00:00', endAt = '2021-12-23 12:00:00'
-    WHERE c_id = '11';
-END IF;
 
-DO
-$do$
+DROP FUNCTION update_class(integer,integer,anyelement,anyelement,boolean);
+
+--on AIR--
+CREATE OR REPLACE FUNCTION update_class(in_class_id INTEGER,in_teacher_id INTEGER,newValue ANYELEMENT, field ANYELEMENT, allowNull BOOLEAN DEFAULT FALSE) RETURNS ANYELEMENT AS $$
 BEGIN
-   IF (SELECT teacher_id FROM classes WHERE c_id = 11) = 8 THEN
-      UPDATE classes
-      SET startAt = '2021-12-23 12:00:00', endAt = '2021-12-23 12:00:00'
-      WHERE c_id = '11';
-   END IF;
-END
-$do$
+  IF
+    (allowNull = FALSE AND newValue IS NULL) OR 
+        LOWER(newValue::varchar) = 'null' OR
+        LOWER(newValue::varchar) = 'undefined' OR
+        (SELECT teacher_id FROM classes WHERE c_id = in_class_id) != in_teacher_id
+  THEN
+    RAISE EXCEPTION USING
+      errcode='28000',
+      message='you are not allowd to change this record',
+      hint='Check your authorization. ';
+  ELSE
+    RETURN newValue;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
 
-
+UPDATE classes
+SET startAt = update_class(11, 8, '2021-12-23 12:00:00', startAt),
+    endAt = update_class(11, 8, '2021-12-23 12:02:00', endAt)
+WHERE c_id = '11' RETURNING *;
 
 
 
@@ -198,10 +205,10 @@ INSERT INTO enrolled(teacher_id, student_id, class_id)
   VALUES((SELECT teacher_id FROM CLASSES WHERE c_id = 11), 1, 11)
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-DROP TRIGGER update_classes_updateAt ON students;
+DROP TRIGGER update_enrolled_updateAt ON students;
 
-CREATE TRIGGER update_classes_updateAt 
-  BEFORE UPDATE ON classes FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
+CREATE TRIGGER update_enrolled_updateAt 
+  BEFORE UPDATE ON enrolled FOR EACH ROW EXECUTE PROCEDURE updateAt_func();
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ##### Update classes Table ##############################
