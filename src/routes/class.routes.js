@@ -56,13 +56,13 @@ router.post('/editclass', rollAuth, (req, res) => {
     if (req.user.roll !== 'teacher') {
         return res.status(403).json({ success: false, message: 'Unauthorized!' })
     }
-    if (req.body.startAt === undefined || req.body.endAt === undefined) {
-        return res.status(400).json({ success: true, message: 'startAt and endAt value required' })
+    if (req.body.startAt === undefined || req.body.endAt === undefined || req.body.class_id === undefined) {
+        return res.status(400).json({ success: true, message: 'class_id, startAt and endAt value required' })
     }
 
 
     //Create new Class
-    EditClass(req.body)
+    EditClass({ ...req.body, teacher_id: req.user.id })
         .then(response => res.json({ success: true, class: response.data }))
         .catch(err => {
             console.log(err);
