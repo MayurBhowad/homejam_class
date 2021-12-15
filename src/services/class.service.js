@@ -2,7 +2,10 @@ const PgClient = require('../config/pg.db');
 
 const getAllClasses = () => {
     return new Promise((resolve, reject) => {
-        PgClient.query(`SELECT * FROM classes`, (err, result) => {
+        PgClient.query(`
+            SELECT c_id, classes.subject, classes.startAt, classes.endAt, teachers.t_id, teachers.name, teachers.email FROM classes
+            INNER JOIN teachers ON classes.teacher_id = teachers.t_id;
+        `, (err, result) => {
             if (err) {
                 return reject({ status: 400, message: err.message })
             }
