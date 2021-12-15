@@ -51,10 +51,10 @@ const EnrollingToClass = data => {
 const getAllClassesByStudents = (studentId) => {
     return new Promise((resolve, reject) => {
         PgClient.query(`
-        SELECT e_id, enrolled.teacher_id, name,class_id, email, roll FROM enrolled 
+        SELECT e_id, enrolled.teacher_id, teachers.name, teachers.email,class_id, classes.subject FROM enrolled 
         LEFT JOIN teachers ON enrolled.teacher_id = teachers.T_ID
         LEFT JOIN classes ON enrolled.class_id = classes.C_ID
-        WHERE enrolled.student_id = $1;
+        WHERE enrolled.student_id = $1;;
         `, [studentId], (err, result) => {
             if (err) {
                 return reject({ status: 400, message: err.message })
@@ -63,8 +63,8 @@ const getAllClassesByStudents = (studentId) => {
             //sorting data with class id
             //data is sorted in Array of students with variable classID
             let sortedData = result.rows.reduce(function (r, a) {
-                r[a.class_id] = r[a.class_id] || [];
-                r[a.class_id].push(a);
+                r[a.subject] = r[a.subject] || [];
+                r[a.subject].push(a);
                 return r
             }, Object.create(null))
 

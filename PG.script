@@ -105,6 +105,11 @@ UPDATE students
 SET roll = 'student'
 WHERE email = 'nick@some.com';
 
+SELECT e_id,class_id, classes.subject, student_id, students.name, students.email FROM enrolled 
+LEFT JOIN students ON enrolled.student_id = students.S_ID
+LEFT JOIN classes ON enrolled.class_id = classes.C_ID
+WHERE enrolled.teacher_id = 5;
+
 
 
 
@@ -145,6 +150,10 @@ CREATE TRIGGER update_classes_updateAt
 UPDATE classes
 SET startAt = '2021-12-23 12:00:00'
 WHERE c_id = '11' RETURNING *;
+
+
+##### get classes Table ##############################
+SELECT * FROM classes;
 
 
 DROP FUNCTION update_class(integer,integer,anyelement,anyelement,boolean);
@@ -232,14 +241,14 @@ SELECT c_id, classes.subject, teachers.email FROM classes
 
 
 ++ ON AIR ++
-SELECT e_id, enrolled.teacher_id, student_id, class_id, name, email, roll FROM enrolled 
+SELECT e_id, enrolled.teacher_id, student_id, class_id, students.name, students.email FROM enrolled 
   LEFT JOIN students ON enrolled.student_id = students.S_ID
   LEFT JOIN classes ON enrolled.class_id = classes.C_ID
   WHERE enrolled.teacher_id = 5;
 
 
 ++ ON AIR ++
-SELECT e_id, enrolled.teacher_id, student_id, class_id, name, email, roll FROM enrolled 
+SELECT e_id, class_id, enrolled.teacher_id, teachers.name, teachers.email, teachers.subject FROM enrolled 
   LEFT JOIN teachers ON enrolled.teacher_id = teachers.T_ID
   LEFT JOIN classes ON enrolled.class_id = classes.C_ID
   WHERE enrolled.student_id = 1;
